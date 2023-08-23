@@ -12,6 +12,9 @@ mod numero;
 use digit::digitos;
 use numero::Numero;
 
+// Crate para tratamiento de argumentos
+use std::env;
+
 /// Esta función recibe los parámetros para un número `face` en base `base`
 /// 
 /// Genera un Número con el constructor `new()`, pero este constructor no es infalible
@@ -57,85 +60,33 @@ fn get_to_base(n: &Numero, base_dest: usize) -> Numero {
 
 #[doc(hidden)]
 fn main() {
-    // Primera prueba: dígitos
-    //let n = run_digits();
-    //println!("El último dígito es: {}", n);
+    let args: Vec<String> = env::args().collect();
 
-    // Segunda prueba: numeros
-    //run_number();
+    if args.len() != 4 {
+        eprintln!(r#"
+        HexConverter: utilidad de conversión de bases numéricas
+
+        Uso: hexconverter <numero> <base1> <base2>");
+"#);
+        std::process::exit(1);
+    }
+
+    let numero = &args[1];
+    let base1: usize = args[2].parse().expect("El segundo argumento debe ser un número entero");
+    let base2: usize = args[3].parse().expect("El tercer argumento debe ser un número entero");
 
     // La función hace exit en caso de error
-    let n: Numero = crate::get_numero("a02", 12);
-    println!("Numero original: {}", n);
+    let n: Numero = crate::get_numero(numero, base1);
+    let n2: Numero = crate::get_to_base(&n, base2);
+    println!("Conversión {} -> {}", n, n2);
 
-    // Prueba de cambio de base (directa)
-    match n.to_base(10) {
-        Ok(_n) => {}
-        Err(e) => {
-            crate::exit(e, 0);
-        }
-    };
-
-    // Prueba de la función get_to_base(), que encapsula el match anterior
-    let n8 = get_to_base(&n, 8);
-    let n16 = get_to_base(&n, 16);
-
-    println!("Los valores son {} y {}", n8.value(), n16.value());
-    println!("Los faciales son {} y {}", n8.face(), n16.face());
-    println!("Los números son {} y {}", n8, n16);
 }
 
-
+/* 
 #[doc(hidden)]
 // Función auxiliar para salir con mensaje
 fn exit(msj: String, code: i32) {
     println!("{}", msj);
     std::process::exit(code);
-}
-/*
-fn run_digits() -> usize {
-    // Valor numérico de un dígito
-    let c = 'x';
-    let n = digitos::get_num(c).unwrap(); // Mejor match
-    println!("{}", n);
-
-    // Carácter para un valor numérico
-    let n = 13;
-    let c = digitos::get_char(n).unwrap();
-    println!("{}", c);
-
-    // Tratamiento del None (sin unwrap)
-    let c = 'z';
-    let n = digitos::get_num(c);
-    match n {
-        Some(n_out) => {
-            println!("{}", n_out);
-            n_out       // Devolver el u8
-            },
-        None => {
-            println!("{}: Error dígito incorrecto", c);
-            std::process::exit(1);
-            }
-    }
-    //println!("{}", n);
-
-
-}
-
-fn run_number() {
-
-    let n = Numero::new(String::from("A02"), 12);
-    match n {
-        Ok(num) => {
-            let v = num.value();
-            println!("El valor numérico es: {}", v);
-            println!("El valor facial es: {}", num.face());
-
-        },
-        Err(err) => {
-            println!("Error: {}", err);
-            std::process::exit(1);
-        }
-    }
 }
  */
