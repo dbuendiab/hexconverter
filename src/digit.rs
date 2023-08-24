@@ -28,12 +28,6 @@ pub mod digitos {
     /// assert_eq!(c, 'f');
     /// ```
     /// 
-    /// ```rust
-    /// let c = 'z';
-    /// let n = digit::get_num(c);
-    /// assert_eq!(n, 35);
-    /// ```
-    /// 
     pub fn get_char(numero: usize) -> Option<char> {
         DIGITOS
         .iter()
@@ -41,6 +35,12 @@ pub mod digitos {
         .map(|&(_, c)| c)
     }
     
+    /// ```rust
+    /// let c = 'z';
+    /// let n = digit::get_num(c);
+    /// assert_eq!(n, 35);
+    /// ```
+    /// 
     pub fn get_num(caracter: char) -> Option<usize> {
         DIGITOS
         .iter()

@@ -40,12 +40,12 @@ fn get_numero(face: &str, base: usize) -> Numero {
 }
 
 
-// Esta función desempaqueta el Result<Numero, String> que
-// genera el método `Numero::to_base()`. Devuelve el número
-// o bien sale del programa. De esta forma me ahorro el discutir
-// con el match del Rust, que me obliga a devolver el mismo 
-// tipo en cada rama.
-
+/// Esta función desempaqueta el Result<Numero, String> que
+/// genera el método `Numero::to_base()`. Devuelve el número
+/// o bien sale del programa. De esta forma me ahorro el discutir
+/// con el match del Rust, que me obliga a devolver el mismo 
+/// tipo en cada rama.
+///
 fn get_to_base(n: &Numero, base_dest: usize) -> Numero {
     match n.to_base(base_dest) {
         Ok(n) => {
