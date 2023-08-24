@@ -47,18 +47,13 @@ impl Numero {
     /// Devuelve un Result con el Número, si todo fue bien, o una cadena de error si no
     pub fn new(text_value: String, base_number: usize) -> Result<Self, String> {
 
-        // Comprobar validez base (y conversión a usize)
-        let base_number: usize = if Numero::validar_base(base_number) {
-            base_number
-        } else {
+        // Comprobar validez base origen
+        if !Numero::validar_base(base_number) {
             return Err("Base fuera de límites".to_owned());
         };
 
         // Pasar la cadena a minúsculas
         let text_value: String = text_value.to_ascii_lowercase();
-
-        // Guardar el rango de caracteres válidos
-        // (de momento no, usaré directamente DIGITOS en digit.rs)
 
         // Comprobar la validez de los caracteres (y quizás pasar a [Chars])
         let text_value_inverted:std::iter::Rev<std::str::Chars<'_>> = text_value.chars().rev();
@@ -99,14 +94,11 @@ impl Numero {
         })
     }
 
-
     /// Devuelve el valor decimal del número
     pub fn value(&self) -> usize { self.val10 }
 
-
     /// Devuelve la cadena alfanumérica que representa al número
     pub fn face(&self) -> &String { &self.text_value }
-
 
     /// Genera un nuevo Numero en una base distinta (encapsulado en Result)
     pub fn to_base(&self, base_dest: usize) -> Result<Self, String> {
@@ -145,14 +137,16 @@ impl Numero {
                 dividendo = cociente;
             }
 
-            // Invertir el vector 
+            // Invertir el vector de caracteres
+            // iter(): convierte el vector en un iterador
+            // rev(): crea otro iterador (a la inversa)
+            // map(): mapea la conversión num -> char. Devuelve Result, por eso el unwrap_or()
+            // collect(): convierte el vector de chars a String
             let text_value = digitos
                 .iter()
                 .rev()
                 .map(|n: &usize| digitos::get_char(*n).unwrap_or('?'))
                 .collect();
-
-            // Combinar en un String
 
             // Componer el número y devolver
             Ok(
@@ -174,10 +168,9 @@ impl Numero {
 // Implementación del trait Display (para las visualizaciones)
 impl Display for Numero {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}/{}", self.text_value, self.base)
+        write!(f, "{}:{}", self.text_value, self.base)
     }
 }
-
 
 
 #[cfg(test)]

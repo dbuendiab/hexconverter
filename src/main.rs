@@ -7,86 +7,46 @@
 mod digit;
 mod numero;
 
+// Crates del sistema
+use std::env;           // Crate para tratamiento de argumentos
+use std::error::Error;  // Crate para el Error del main()
+
 // Asigna una ruta completa a un nombre
 // En este caso, digitos es un módulo, y Numero es la estructura Numero
 use digit::digitos;
 use numero::Numero;
 
-// Crate para tratamiento de argumentos
-use std::env;
+// Mensaje de información del programa
+const INFO: &str = 
+r#"
+    HexConverter: utilidad de conversión de bases numéricas
 
-/// Esta función recibe los parámetros para un número `face` en base `base`
-/// 
-/// Genera un Número con el constructor `new()`, pero este constructor no es infalible
-/// así que devuelve un `Result<Numero, String>` según la operación  haya funcionado o no
-/// 
-/// El caso `Ok()` es el que devuelve el `Numero n`, el otro `Err()` un mensaje de error
-/// 
-/// El problema es que yo estoy acostumbrado a 'acabar' con el error vía `try-catch` o
-/// similar, de modo que saldría de esta función limpiamente, devolviendo solo `n`
-/// 
-/// El match debe devolver el mismo tipo en ambos brazos (es cierto?), pero veo que
-/// si salgo del programa vía `exit()`, el compilador me lo perdona
-/// 
-fn get_numero(face: &str, base: usize) -> Numero {
-    let r = Numero::new(String::from(face), base);
-    match r {
-        Ok(n) => n,
-        Err(e) => {
-            println!("{}", e);
-            std::process::exit(0);
-        }
-    }
-}
+    Uso: hexconverter <numero> <base1> <base2>");
+"#;
 
-
-/// Esta función desempaqueta el Result<Numero, String> que
-/// genera el método `Numero::to_base()`. Devuelve el número
-/// o bien sale del programa. De esta forma me ahorro el discutir
-/// con el match del Rust, que me obliga a devolver el mismo 
-/// tipo en cada rama.
-///
-fn get_to_base(n: &Numero, base_dest: usize) -> Numero {
-    match n.to_base(base_dest) {
-        Ok(n) => {
-            n
-        }
-        Err(e) => {
-            println!("{}", e);
-            std::process::exit(0);
-        }
-    }
-}
 
 #[doc(hidden)]
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
+
+    // Tratamiento del vector de argumentos: número de argumentos
     let args: Vec<String> = env::args().collect();
-
     if args.len() != 4 {
-        eprintln!(r#"
-        HexConverter: utilidad de conversión de bases numéricas
-
-        Uso: hexconverter <numero> <base1> <base2>");
-"#);
+        eprintln!("{}", INFO);
         std::process::exit(1);
     }
-
+    // Recogida de los parámetros. Interesante el Result del parse(), resuelto vía expect()
     let numero = &args[1];
     let base1: usize = args[2].parse().expect("El segundo argumento debe ser un número entero");
     let base2: usize = args[3].parse().expect("El tercer argumento debe ser un número entero");
 
-    // La función hace exit en caso de error
-    let n: Numero = crate::get_numero(numero, base1);
-    let n2: Numero = crate::get_to_base(&n, base2);
-    println!("Conversión {} -> {}", n, n2);
+    // Aquí usamos las funciones del crate numero::Numero
+    // Interesante el uso de (?) para hacer unwrap() pero sin panic!
+    // (en lugar de ello, se devuelve el Ok() a la variable, y si hay Err() sale directamente del programa)
+    // Para que esto funcione, la función main() debe devolver Result<(), Box <dyn Error>>
+    let n = Numero::new(String::from(numero), base1)?;
+    let n2 = n.to_base(base2)?;
 
-}
+    println!("Conversión {} -> {} -> {}", n, n.value(), n2);
 
-/* 
-#[doc(hidden)]
-// Función auxiliar para salir con mensaje
-fn exit(msj: String, code: i32) {
-    println!("{}", msj);
-    std::process::exit(code);
+    Ok(())
 }
- */
