@@ -43,10 +43,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Interesante el uso de (?) para hacer unwrap() pero sin panic!
     // (en lugar de ello, se devuelve el Ok() a la variable, y si hay Err() sale directamente del programa)
     // Para que esto funcione, la función main() debe devolver Result<(), Box <dyn Error>>
+    // Otra opción es except(), pero en este caso, aunque devuelve el mensaje, se provoca un panic!()
     let n = Numero::new(String::from(numero), base1)?;
     let n2 = n.to_base(base2)?;
 
+    // Presentación de los resultados
     println!("Conversión {} -> {} -> {}", n, n.value(), n2);
 
+    // Es obligado devolver esto para poder usar (?)
     Ok(())
 }
