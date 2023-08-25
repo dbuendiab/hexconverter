@@ -21,7 +21,7 @@ const INFO: &str =
 r#"
     HexConverter: utilidad de conversión de bases numéricas
 
-    Uso: hexconverter <numero> <base1> <base2>");
+    Uso: hexconverter <numero> <base1> <base2>
 "#;
 
 
