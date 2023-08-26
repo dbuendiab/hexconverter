@@ -13,10 +13,11 @@ use std::error::Error;  // Crate para el Error del main()
 
 // Asigna una ruta completa a un nombre
 // En este caso, digitos es un módulo, y Numero es la estructura Numero
-use digit::digitos;
+//use digit::digitos;
 use numero::Numero;
 
 // Mensaje de información del programa
+//#[doc(hidden)]
 const INFO: &str = 
 r#"
     HexConverter: utilidad de conversión de bases numéricas

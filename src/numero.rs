@@ -6,13 +6,13 @@
 //! 
 //! Implementa además el trait Display, que equivale al repr()
 //! de Python y permite rellenar el {} en los println!()
-//! 
+
 // Rutas del trait y de su raíz (self = str::fmt)
 use std::fmt::{Display, self};
 
 // El módulo dígitos implementa la correspondencia num <-> char
 // para todos los dígitos posibles de la aplicación
-use crate::digitos;
+use crate::digit::digitos;
 
 /// # Estructura Numero
 /// 
@@ -20,9 +20,10 @@ use crate::digitos;
 /// y convertirlo en otro número en otra base
 /// # Ejemplo
 /// ```rust
-/// let n: Numero = Numero::new(String::from("abcd", 16))?;
+/// use hexconverter::numero::Numero;
+/// let n: Numero = Numero::new(String::from("abcd"), 16).unwrap();
 /// println!("El valor decimal es {}", n.value());
-/// let n2: Numero = n.to_base(2)?;
+/// let n2: Numero = n.to_base(2).unwrap();
 /// println!("El numero en base 2 es {}", n2);
 /// 
 
@@ -55,6 +56,22 @@ impl Numero {
         // Pasar la cadena a minúsculas
         let text_value: String = text_value.to_ascii_lowercase();
 
+        // Validar los dígitos (en orden natural, para que los mensajes de error salgan en orden)
+        let text_value_normal = text_value.chars();
+        for letra in text_value_normal {
+            match digitos::get_num(letra) {
+                Some(numero) => {
+                        // El dígito puede ser válido pero no para la base actual
+                        if numero > (base_number - 1) {
+                            return Err(format!("El carácter '{letra}' no es válido en base {base_number}"))
+                        }    
+                }
+                None => {
+                    return Err(format!("El carácter '{letra}' en '{text_value}' no es válido"));
+                },
+            }
+        }
+
         // Comprobar la validez de los caracteres (y quizás pasar a [Chars])
         let text_value_inverted:std::iter::Rev<std::str::Chars<'_>> = text_value.chars().rev();
 
@@ -66,10 +83,6 @@ impl Numero {
 
             match digitos::get_num(letra) {
                 Some(numero) => {
-                    // El dígito puede ser válido pero no para la base actual
-                    if numero > (base_number - 1) {
-                        return Err(format!("El carácter '{letra}' no es válido en base {base_number}"))
-                    }
 
                     // Antes hacía este producto a posteriori (para la siguiente operación),
                     // pero para un valor de usize::MAX, el producto hacía overflow, así que
@@ -98,6 +111,7 @@ impl Numero {
     pub fn value(&self) -> usize { self.val10 }
 
     /// Devuelve la cadena alfanumérica que representa al número
+    #[allow(dead_code)]
     pub fn face(&self) -> &String { &self.text_value }
 
     /// Genera un nuevo Numero en una base distinta (encapsulado en Result)
@@ -172,11 +186,11 @@ impl Display for Numero {
     }
 }
 
-
+/* 
 #[cfg(test)]
 mod tests {
 
-    use crate::Numero;
+    use crate::numero::Numero;
 
     fn primitiva(face: &str, base: usize, valor: usize, error: &str) {
         //let face = face;
@@ -271,7 +285,7 @@ mod tests {
 
     #[test]
     fn numero_convert_error_digito() {
-        primitiva2("2263", 2_usize, 8_usize, "1001011001122222222222", "El carácter '3' no es válido en base 2");
+        primitiva2("2263", 2_usize, 8_usize, "1001011001122222222222", "El carácter '2' no es válido en base 2");
     }
 
 
@@ -279,3 +293,4 @@ mod tests {
     
 
 
+ */

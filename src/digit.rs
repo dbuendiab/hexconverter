@@ -1,9 +1,9 @@
 //! # Módulo dígitos
 //! 
-//! Proporciona las funciones para convertir caracteres en índices y viceversa
-//! Los caracteres están en el rango 0..0a..z, y los índices entre 0..35
+//! Proporciona las funciones `get_num()` y `get_char()`, para convertir caracteres en índices y viceversa
 //! 
-//! ## Ejemplos
+//! Los caracteres están en el rango `0..9a..z`, y los índices entre `0..35`
+//! 
 
 // Un problema con los doctest, que no se ejecutan aquí
 // Por lo visto, solo se ejecutan si están en lib.rs, ya que se supone
@@ -22,10 +22,19 @@ pub mod digitos {
                                 (30, 'u'), (31, 'v'), (32, 'w'), (33, 'x'), (34, 'y'), 
                                 (35, 'z'),];
 
+    /// Dado un carácter, esta función devuelve el valor numérico que representa
+    /// 
+    /// Los dígitos van de `'0'` a `'9'` y siguen de `'a'` a `'z'`
+    /// 
+    /// Los valores correspondientes van de `0` a `9` y de `10` a `35`
+    /// 
+    /// ## Ejemplo
+    /// 
     /// ```rust
+    /// use hexconverter::digit::digitos;
     /// let n = 15;
-    /// let c = digit::get_char(n);
-    /// assert_eq!(c, 'f');
+    /// let c: Option<char> = digitos::get_char(n);
+    /// assert_eq!(c, Some('f'));
     /// ```
     /// 
     pub fn get_char(numero: usize) -> Option<char> {
@@ -35,10 +44,19 @@ pub mod digitos {
         .map(|&(_, c)| c)
     }
     
+    /// Función que devuelve el carácter del dígito correspondiente a un número
+    /// 
+    /// Los valores de entrada válidos son desde `0` a `35`, ambos inclusive
+    /// 
+    /// Para los caracteres mayores de `9`, se usan los caracteres del rango `a..z`
+    /// 
+    /// ## Ejemplo
+    /// 
     /// ```rust
+    /// use hexconverter::digit::digitos;
     /// let c = 'z';
-    /// let n = digit::get_num(c);
-    /// assert_eq!(n, 35);
+    /// let n: Option<usize> = digitos::get_num(c);
+    /// assert_eq!(n, Some(35));
     /// ```
     /// 
     pub fn get_num(caracter: char) -> Option<usize> {
