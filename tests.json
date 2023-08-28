@@ -1,0 +1,6 @@
+[
+    ["10", "2", "10", "Conversión 10:2 -> 2 -> 2:10\n"],
+    ["324", "6", "12", "Conversión 324:6 -> 124 -> a4:12\n"],
+    ["diegobuendia", "35", "16", "Conversión diegobuendia:35 -> 1305933913122261440 -> 121f9bf98fc9c9c0:16\n"],
+    ["121f9bf98fc9c9c0", "16", "35", "Conversión 121f9bf98fc9c9c0:16 -> 1305933913122261440 -> diegobuendia:35\n"]
+]

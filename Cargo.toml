@@ -10,3 +10,9 @@ path = "src/lib.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+
+[dev-dependencies]
+# Para leer los test de integración en src\lib desde un fichero json
+serde = "1.0"
+serde_json = "1.0"
+
